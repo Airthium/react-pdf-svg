@@ -1,5 +1,5 @@
 import ReactPDF from '@react-pdf/renderer'
 
-const svgToSvg = (svg: JSX.Element) => ReactPDF.Svg
+const svgToSvg = (svg: SVGElement) => JSX.Element
 
 export default svgToSvg
