@@ -49,125 +49,233 @@ const getChildren = (parent: Element): JSX.Element[] => {
     // Type
     const type = item.tagName
 
-    // Props
-    const attributes = item.attributes
-    let props: { [key: string]: string } = {}
-    for (const attribute of attributes) {
-      if (attribute.name === 'stroke-dasharray') {
-        props[stringToCamelCase(attribute.name)] = attribute.value
-          .split(' ')
-          .join(', ')
-      } else {
-        props[stringToCamelCase(attribute.name)] = attribute.value
-      }
-    }
-    props.key = uuid()
+    // // Props
+    // const attributes = item.attributes
+    // let props: { [key: string]: string } = {}
+    // for (const attribute of attributes) {
+    //   if (attribute.name === 'stroke-dasharray') {
+    //     // BUG wrong formatting of stroke-dasharray: "3 3" instead of stroke-dasharray: "3, 3"
+    //     props[stringToCamelCase(attribute.name)] = attribute.value
+    //       .split(' ')
+    //       .join(', ')
+    //   } else {
+    //     props[stringToCamelCase(attribute.name)] = attribute.value
+    //   }
+    // }
+    // props.key = uuid()
+
+    //TODO set presentation attributes
 
     // Switch
     switch (type) {
       case 'line':
-        children.push(
-          <Line {...(props as unknown as ReactPDF.LineProps)}>
-            {getChildren(item)}
-          </Line>
-        )
+        const lineProps: ReactPDF.LineProps = { x1: 0, x2: 0, y1: 0, y2: 0 }
+        {
+          const x1 = item.getAttribute('x1')
+          x1 && (lineProps.x1 = x1)
+          const x2 = item.getAttribute('x2')
+          x2 && (lineProps.x2 = x2)
+          const y1 = item.getAttribute('y1')
+          y1 && (lineProps.y1 = y1)
+          const y2 = item.getAttribute('y2')
+          y2 && (lineProps.y2 = y2)
+        }
+
+        children.push(<Line {...lineProps}>{getChildren(item)}</Line>)
         break
       case 'polyline':
+        const polylineProps: ReactPDF.PolylineProps = { points: '' }
+        {
+          const points = item.getAttribute('points')
+          points && (polylineProps.points = points)
+        }
+
         children.push(
-          <Polyline {...(props as unknown as ReactPDF.PolylineProps)}>
-            {getChildren(item)}
-          </Polyline>
+          <Polyline {...polylineProps}>{getChildren(item)}</Polyline>
         )
         break
       case 'polygon':
+        const polygonProps: ReactPDF.PolygonProps = { points: '' }
+        {
+          const points = item.getAttribute('points')
+          points && (polygonProps.points = points)
+        }
+
         children.push(
-          <Polygon {...(props as unknown as ReactPDF.PolygonProps)}>
+          <Polygon {...(polygonProps as unknown as ReactPDF.PolygonProps)}>
             {getChildren(item)}
           </Polygon>
         )
         break
       case 'path':
-        children.push(
-          <Path {...(props as unknown as ReactPDF.PathProps)}>
-            {getChildren(item)}
-          </Path>
-        )
+        const pathProps: ReactPDF.PathProps = { d: '' }
+        {
+          const d = item.getAttribute('d')
+          d && (pathProps.d = d)
+        }
+
+        children.push(<Path {...pathProps}>{getChildren(item)}</Path>)
         break
       case 'rect':
-        children.push(
-          <Rect {...(props as unknown as ReactPDF.RectProps)}>
-            {getChildren(item)}
-          </Rect>
-        )
+        const rectProps: ReactPDF.RectProps = {
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0
+        }
+        {
+          const x = item.getAttribute('x')
+          x && (rectProps.x = x)
+          const y = item.getAttribute('y')
+          y && (rectProps.y = y)
+          const width = item.getAttribute('width')
+          width && (rectProps.width = width)
+          const height = item.getAttribute('height')
+          height && (rectProps.height = height)
+          const rx = item.getAttribute('rx')
+          rx && (rectProps.rx = rx)
+          const ry = item.getAttribute('ry')
+          ry && (rectProps.ry = ry)
+        }
+
+        children.push(<Rect {...rectProps}>{getChildren(item)}</Rect>)
         break
       case 'circle':
-        children.push(
-          <Circle {...(props as unknown as ReactPDF.CircleProps)}>
-            {getChildren(item)}
-          </Circle>
-        )
+        const circleProps: ReactPDF.CircleProps = { cx: 0, cy: 0, r: 0 }
+        {
+          const cx = item.getAttribute('cx')
+          cx && (circleProps.cx = cx)
+          const cy = item.getAttribute('cy')
+          cy && (circleProps.cy = cy)
+          const r = item.getAttribute('r')
+          r && (circleProps.r = r)
+        }
+
+        children.push(<Circle {...circleProps}>{getChildren(item)}</Circle>)
         break
       case 'ellipse':
-        children.push(
-          <Ellipse {...(props as unknown as ReactPDF.EllipseProps)}>
-            {getChildren(item)}
-          </Ellipse>
-        )
+        const ellipseProps: ReactPDF.EllipseProps = {
+          cx: 0,
+          cy: 0,
+          rx: 0,
+          ry: 0
+        }
+        {
+          const cx = item.getAttribute('cx')
+          cx && (ellipseProps.cx = cx)
+          const cy = item.getAttribute('cy')
+          cy && (ellipseProps.cy = cy)
+          const rx = item.getAttribute('rx')
+          rx && (ellipseProps.rx = rx)
+          const ry = item.getAttribute('ry')
+          ry && (ellipseProps.ry = ry)
+        }
+
+        children.push(<Ellipse {...ellipseProps}>{getChildren(item)}</Ellipse>)
         break
       case 'text':
-        children.push(
-          <Text {...(props as unknown as ReactPDF.SVGTextProps)}>
-            {getChildren(item)}
-          </Text>
-        )
+        const textProps: ReactPDF.SVGTextProps = { x: 0, y: 0 }
+        {
+          const x = item.getAttribute('x')
+          x && (textProps.x = x)
+          const y = item.getAttribute('y')
+          y && (textProps.y = y)
+        }
+
+        children.push(<Text {...textProps}>{getChildren(item)}</Text>)
         break
       case 'tspan':
-        children.push(
-          <Tspan {...(props as unknown as ReactPDF.TspanProps)}>
-            {getChildren(item)}
-          </Tspan>
-        )
+        const tspanProps: ReactPDF.TspanProps = { x: 0, y: 0 }
+        {
+          const x = item.getAttribute('x')
+          x && (tspanProps.x = x)
+          const y = item.getAttribute('y')
+          y && (tspanProps.y = y)
+        }
+
+        children.push(<Tspan {...tspanProps}>{getChildren(item)}</Tspan>)
         break
       case 'g':
-        children.push(
-          <G {...(props as unknown as ReactPDF.GProps)}>{getChildren(item)}</G>
-        )
+        const gProps: ReactPDF.GProps = {}
+
+        children.push(<G {...gProps}>{getChildren(item)}</G>)
         break
       case 'stop':
-        children.push(
-          <Stop {...(props as unknown as ReactPDF.StopProps)}>
-            {getChildren(item)}
-          </Stop>
-        )
+        const stopProps: ReactPDF.StopProps = { offset: 0, stopColor: '' }
+        {
+          const offset = item.getAttribute('offset')
+          offset && (stopProps.offset = offset)
+          const stopColor = item.getAttribute('stopColor')
+          stopColor && (stopProps.stopColor = stopColor)
+          const stopOpacity = item.getAttribute('stopOpacity')
+          stopOpacity && (stopProps.stopOpacity = stopOpacity)
+        }
+
+        children.push(<Stop {...stopProps}>{getChildren(item)}</Stop>)
         break
       case 'defs':
-        children.push(
-          <Defs {...(props as unknown as ReactPDF.DefsProps)}>
-            {getChildren(item)}
-          </Defs>
-        )
+        children.push(<Defs>{getChildren(item)}</Defs>)
         break
       case 'clippath':
+        const clipPathProps: ReactPDF.ClipPathProps = {}
+
         children.push(
-          <ClipPath {...(props as unknown as ReactPDF.ClipPathProps)}>
-            {getChildren(item)}
-          </ClipPath>
+          <ClipPath {...clipPathProps}>{getChildren(item)}</ClipPath>
         )
         break
       case 'lineargradient':
+        const linearGradientProps: ReactPDF.LinearGradientProps = {
+          id: '',
+          x1: 0,
+          x2: 0,
+          y1: 0,
+          y2: 0
+        }
+        {
+          const id = item.getAttribute('id')
+          id && (linearGradientProps.id = id)
+          const x1 = item.getAttribute('x1')
+          x1 && (linearGradientProps.x1 = x1)
+          const x2 = item.getAttribute('x2')
+          x2 && (linearGradientProps.x2 = x2)
+          const y1 = item.getAttribute('y1')
+          y1 && (linearGradientProps.y1 = y1)
+          const y2 = item.getAttribute('y2')
+          y2 && (linearGradientProps.y1 = y2)
+        }
+
         children.push(
-          <LinearGradient
-            {...(props as unknown as ReactPDF.LinearGradientProps)}
-          >
+          <LinearGradient {...linearGradientProps}>
             {getChildren(item)}
           </LinearGradient>
         )
         break
       case 'radialgradient':
+        const radialGradientProps: ReactPDF.RadialGradientProps = {
+          id: '',
+          cx: 0,
+          cy: 0,
+          fr: 0,
+          fx: 0,
+          fy: 0
+        }
+        {
+          const id = item.getAttribute('id')
+          id && (radialGradientProps.id = id)
+          const cx = item.getAttribute('cx')
+          cx && (radialGradientProps.cx = cx)
+          const cy = item.getAttribute('cy')
+          cy && (radialGradientProps.cy = cy)
+          const fr = item.getAttribute('fr')
+          fr && (radialGradientProps.fr = fr)
+          const fx = item.getAttribute('fx')
+          fx && (radialGradientProps.fx = fx)
+          const fy = item.getAttribute('fy')
+          fy && (radialGradientProps.fy = fy)
+        }
+
         children.push(
-          <RadialGradient
-            {...(props as unknown as ReactPDF.RadialGradientProps)}
-          >
+          <RadialGradient {...radialGradientProps}>
             {getChildren(item)}
           </RadialGradient>
         )
@@ -189,12 +297,16 @@ const svgToSvg = (svg: SVGElement): JSX.Element => {
   if (!svg || svg.tagName !== 'svg')
     throw new Error('Your element is not a svg element')
 
-  // Attributes -> props
-  const attributes = svg.attributes
-  let props: { [key: string]: string } = {}
-  for (const attribute of attributes) {
-    props[stringToCamelCase(attribute.name)] = attribute.value
-  }
+  // Props
+  const props: ReactPDF.SVGProps = {}
+  const width = svg.getAttribute('width')
+  width && (props.width = width)
+  const height = svg.getAttribute('height')
+  height && (props.height = height)
+  const viewBox = svg.getAttribute('viewBox')
+  viewBox && (props.viewBox = viewBox)
+  const presetAspectRatio = svg.getAttribute('preserveAspectRatio')
+  presetAspectRatio && (props.preserveAspectRatio = presetAspectRatio)
 
   // Children
   const children = getChildren(svg)

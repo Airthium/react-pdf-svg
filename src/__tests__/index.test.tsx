@@ -11,17 +11,11 @@ describe('svgToSvg', () => {
         width="300"
         height="200"
       >
-        <title>Exemple simple de figure SVG</title>
-        <desc>
-          Cette figure est constituée d'un rectangle, d'un segment de droite et
-          d'un cercle.
-        </desc>
-
         <rect width="100" height="80" x="0" y="70" fill="green" />
         <line x1="5" y1="5" x2="250" y2="95" stroke="red" />
         <circle cx="90" cy="80" r="50" fill="blue" />
         <text x="180" y="60">
-          Un texte
+          A text
         </text>
       </svg>
     )
