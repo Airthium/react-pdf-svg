@@ -1,6 +1,6 @@
 {
   "name": "@airthium/react-pdf-svg",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "license": "MIT",
   "homepage": "https://github.com/Airthium/react-pdf-svg",
   "repository": {
@@ -26,6 +26,9 @@
     "rendertest": "REACT_APP_RENDER_TEST=1 react-scripts start",
     "build": "tsc"
   },
+  "dependencies": {
+    "uuid": "9.0.0"
+  },
   "devDependencies": {
     "@babel/preset-env": "7.19.1",
     "@babel/preset-react": "7.18.6",
@@ -46,8 +49,7 @@
     "react-dom": "18.2.0",
     "react-scripts": "5.0.1",
     "typedoc": "0.23.15",
-    "typescript": "4.8.3",
-    "uuid": "9.0.0"
+    "typescript": "4.8.3"
   },
   "browserslist": {
     "production": [

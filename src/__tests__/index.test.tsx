@@ -39,6 +39,6 @@ describe('svgToSvg', () => {
     root.unmount()
 
     const reactSvg = svgToSvg(svg)
-    console.log(reactSvg)
+    expect(reactSvg).toBeDefined()
   })
 })

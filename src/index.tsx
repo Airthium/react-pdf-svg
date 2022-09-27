@@ -96,8 +96,6 @@ const getChildren = (parent: Element): JSX.Element[] => {
         )
         break
       case 'text':
-        console.log(item.innerHTML)
-        console.log(props)
         children.push(
           <Text {...(props as unknown as ReactPDF.SVGTextProps)}>
             {getChildren(item)}
