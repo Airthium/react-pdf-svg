@@ -4,19 +4,20 @@ import ReactPDF, { Document, Page, PDFViewer, Svg } from '@react-pdf/renderer'
 
 import {
   circleToCircle,
-  clippathToClipPath,
+  clipPathToClipPath,
   defsToDefs,
   ellipseToEllipse,
   getAttributes,
   gToG,
-  lineargradientToLinearGradient,
+  linearGradientToLinearGradient,
   lineToLine,
   pathToPath,
   polygonToPolygon,
   polylineToPolyline,
-  radialgradientToRadialGradient,
+  radialGradientToRadialGradient,
   rectToRect,
   stopToStop,
+  svgToSvg,
   textToText,
   tspanToTspan
 } from './toSvg'
@@ -41,6 +42,9 @@ export const getChildren = (parent: Element): JSX.Element[] => {
 
     // Switch
     switch (type) {
+      case 'svg':
+        children.push(svgToSvg(item))
+        break
       case 'line':
         children.push(lineToLine(item))
         break
@@ -77,16 +81,17 @@ export const getChildren = (parent: Element): JSX.Element[] => {
       case 'defs':
         children.push(defsToDefs(item))
         break
-      case 'clippath':
-        children.push(clippathToClipPath(item))
+      case 'clipPath':
+        children.push(clipPathToClipPath(item))
         break
       case 'lineargradient':
-        children.push(lineargradientToLinearGradient(item))
+        children.push(linearGradientToLinearGradient(item))
         break
       case 'radialgradient':
-        children.push(radialgradientToRadialGradient(item))
+        children.push(radialGradientToRadialGradient(item))
         break
       default:
+        console.log(item)
         break
     }
   }
@@ -99,7 +104,7 @@ export const getChildren = (parent: Element): JSX.Element[] => {
  * @param svg SVG
  * @returns ReactPDF Svg
  */
-const svgToSvg = (svg: SVGElement): JSX.Element => {
+const convert = (svg: SVGElement): JSX.Element => {
   if (!svg || svg.tagName !== 'svg')
     throw new Error('Your element is not a svg element')
 
@@ -137,23 +142,23 @@ if (process.env.REACT_APP_RENDER_TEST) {
       <>
         {/* {simple} */}
         {blackGraph}
-        {graph}
+        {/* {graph} */}
       </>
     )
 
-    const convert = useCallback(() => {
+    const converter = useCallback(() => {
       const svg = div.children?.[0] as SVGElement
       if (!svg) {
-        setTimeout(convert, 500)
+        setTimeout(converter, 500)
         return
       }
 
-      const ReactSVG = svgToSvg(svg)
+      const ReactSVG = convert(svg)
       setSVG(ReactSVG)
     }, [])
 
     useEffect(() => {
-      convert()
+      converter()
     }, [])
 
     if (SVG)
@@ -178,4 +183,4 @@ if (process.env.REACT_APP_RENDER_TEST) {
   )
 }
 
-export default svgToSvg
+export default convert

@@ -12,6 +12,7 @@ import ReactPDF, {
   RadialGradient,
   Rect,
   Stop,
+  Svg,
   Text,
   Tspan
 } from '@react-pdf/renderer'
@@ -86,6 +87,22 @@ export const getPresentationAtributes = (item: Element, props: any): void => {
   getAttributes(item, presentationAttributes, props)
 }
 
+export const svgToSvg = (item: Element): JSX.Element => {
+  const props: ReactPDF.SVGProps & { key: string } = { key: uuid() }
+  getAttributes(
+    item,
+    [
+      { key: 'width', type: 'number' },
+      { key: 'height', type: 'number' },
+      { key: 'viewBox', type: 'string' },
+      { key: 'preserveAspectRatio', type: 'string' }
+    ],
+    props
+  )
+
+  return <Svg {...props}>{getChildren(item)}</Svg>
+}
+
 /**
  * line to Line
  * @param item Item
@@ -155,6 +172,8 @@ export const pathToPath = (item: Element): JSX.Element => {
   const props: ReactPDF.PathProps & { key: string } = { key: uuid(), d: '' }
   getPresentationAtributes(item, props)
   getAttributes(item, [{ key: 'd', type: 'string' }], props)
+
+  if (!props.fill) props.fill = '#abc'
 
   return <Path {...props}>{getChildren(item)}</Path>
 }
@@ -358,22 +377,22 @@ export const defsToDefs = (item: Element): JSX.Element => {
 }
 
 /**
- * clippath to ClipPath
+ * clipPath to ClipPath
  * @param item Item
  * @returns ClipPath
  */
-export const clippathToClipPath = (item: Element): JSX.Element => {
+export const clipPathToClipPath = (item: Element): JSX.Element => {
   const props: ReactPDF.ClipPathProps & { key: string } = { key: uuid() }
 
   return <ClipPath {...props}>{getChildren(item)}</ClipPath>
 }
 
 /**
- * lineargradient to LinearGradient
+ * linearGradient to LinearGradient
  * @param item Item
  * @returns LinearGradient
  */
-export const lineargradientToLinearGradient = (item: Element): JSX.Element => {
+export const linearGradientToLinearGradient = (item: Element): JSX.Element => {
   const props: ReactPDF.LinearGradientProps & { key: string } = {
     key: uuid(),
     id: '',
@@ -402,7 +421,7 @@ export const lineargradientToLinearGradient = (item: Element): JSX.Element => {
  * @param item Item
  * @returns RadialGradient
  */
-export const radialgradientToRadialGradient = (item: Element): JSX.Element => {
+export const radialGradientToRadialGradient = (item: Element): JSX.Element => {
   const props: ReactPDF.RadialGradientProps & { key: string } = {
     key: uuid(),
     id: '',
