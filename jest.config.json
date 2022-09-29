@@ -1,8 +1,9 @@
 {
-  "setupFiles": ["./jest/setup.js", "./jest/mock.js"],
-  "testMatch": ["**/*.test.tsx"],
+  "setupFiles": ["./jest/setup.js"],
+  "testMatch": ["**/*.test.ts", "**/*.test.tsx"],
   "transform": {
     "\\.tsx?$": ["babel-jest", { "configFile": "./jest/babel.config.json" }]
   },
-  "testEnvironment": "jest-environment-jsdom"
+  "testEnvironment": "jest-environment-jsdom",
+  "coveragePathIgnorePatterns": ["./src/__tests__"]
 }

@@ -1,3 +1,5 @@
+/** @module ToSVG */
+
 import ReactPDF, {
   Circle,
   ClipPath,
@@ -13,14 +15,17 @@ import ReactPDF, {
   Rect,
   Stop,
   Svg,
-  Text,
-  Tspan
+  Text
 } from '@react-pdf/renderer'
+import { Fragment } from 'react'
 import { v4 as uuid } from 'uuid'
 
 import { getChildren } from '.'
 import { attributeToNumber, cssToCamelCase } from './utils'
 
+/**
+ * SVG attributes
+ */
 export interface SVGAttribute {
   key: string
   type: 'string' | 'number'
@@ -72,7 +77,8 @@ export const getAttributes = (
 
     if (value) {
       const key = cssToCamelCase(attribute.key)
-      if (attribute.type === 'number') props[key] = attributeToNumber(value)
+      if (attribute.type === 'number')
+        props[key] = attributeToNumber(item, value)
       else props[key] = value
     }
   })
@@ -285,8 +291,16 @@ export const textToText = (item: Element): JSX.Element => {
     props
   )
 
-  const children = getChildren(item)
-  return <Text {...props}>{children.length ? children : item.innerHTML}</Text>
+  const children = item.children
+  if (children.length) {
+    const texts: JSX.Element[] = []
+    for (const child of children) {
+      texts.push(tspanToTspan(child, item))
+    }
+    return <Fragment key={uuid()}>{texts}</Fragment>
+  } else {
+    return <Text {...props}>{item.innerHTML}</Text>
+  }
 }
 
 /**
@@ -295,12 +309,10 @@ export const textToText = (item: Element): JSX.Element => {
  * @returns Tspan
  */
 export const tspanToTspan = (item: Element, parent: Element): JSX.Element => {
-  const props: ReactPDF.TspanProps & { key: string; dx?: number; dy?: number } =
-    {
-      key: uuid(),
-      x: 0,
-      y: 0
-    }
+  const props: ReactPDF.TspanProps & { dx?: number; dy?: number } = {
+    x: 0,
+    y: 0
+  }
   getPresentationAtributes(item, props)
   getAttributes(
     item,
@@ -313,7 +325,12 @@ export const tspanToTspan = (item: Element, parent: Element): JSX.Element => {
     props
   )
 
-  const parentProps: ReactPDF.SVGTextProps = { x: 0, y: 0 }
+  const parentProps: ReactPDF.SVGTextProps & { key: string } = {
+    key: uuid(),
+    x: 0,
+    y: 0
+  }
+  getPresentationAtributes(parent, parentProps)
   getAttributes(
     parent,
     [
@@ -323,10 +340,10 @@ export const tspanToTspan = (item: Element, parent: Element): JSX.Element => {
     parentProps
   )
 
-  props.x = props.x ?? +parentProps.x + (props.dx ?? 0)
-  props.y = props.y ?? +parentProps.y + (props.dy ?? 0)
+  parentProps.x = +parentProps.x + (props.dx ?? 0)
+  parentProps.y = +parentProps.y + (props.dy ?? 0)
 
-  return item.innerHTML
+  return <Text {...parentProps}>{item.innerHTML}</Text>
 }
 
 /**

@@ -1,3 +1,5 @@
+/** @module Index */
+
 import ReactDOM from 'react-dom/client'
 import React, { useCallback, useEffect, useState } from 'react'
 import ReactPDF, { Document, Page, PDFViewer, Svg } from '@react-pdf/renderer'
@@ -22,10 +24,8 @@ import {
   tspanToTspan
 } from './toSvg'
 
-import graph from './__tests__/graph'
 import simple from './__tests__/simple'
-
-import blackGraph from './__tests__/blackGraph'
+import recharts from './__tests__/recharts'
 
 /**
  * Get children
@@ -38,7 +38,7 @@ export const getChildren = (parent: Element): JSX.Element[] => {
   // Iterate children
   for (let item of parent.children) {
     // Type
-    const type = item.tagName
+    const type = item.tagName.toLowerCase()
 
     // Switch
     switch (type) {
@@ -81,7 +81,7 @@ export const getChildren = (parent: Element): JSX.Element[] => {
       case 'defs':
         children.push(defsToDefs(item))
         break
-      case 'clipPath':
+      case 'clippath':
         children.push(clipPathToClipPath(item))
         break
       case 'lineargradient':
@@ -91,7 +91,7 @@ export const getChildren = (parent: Element): JSX.Element[] => {
         children.push(radialGradientToRadialGradient(item))
         break
       default:
-        console.log(item)
+        console.error('Skip item', item)
         break
     }
   }
@@ -123,59 +123,81 @@ const convert = (svg: SVGElement): JSX.Element => {
 
   props.width = '500'
 
-  // Children
-  const children = getChildren(svg)
-
   /**
    * Render
    */
-  return <Svg {...props}>{children}</Svg>
+  return <Svg {...props}>{getChildren(svg)}</Svg>
 }
 
-if (process.env.REACT_APP_RENDER_TEST) {
-  const RenderTest = () => {
-    const [SVG, setSVG] = useState<JSX.Element>()
+/// TEST
 
+/**
+ * Render test
+ * @returns RenderTest
+ */
+export const RenderTest = () => {
+  // State
+  const [div, setDiv] = useState<HTMLDivElement>()
+  const [SVG, setSVG] = useState<JSX.Element>()
+
+  /**
+   * Get svg
+   */
+  const getSVG = useCallback(() => {
+    const svg = div?.children?.[0] as SVGElement
+    if (!svg) {
+      setTimeout(getSVG, 500)
+      return
+    }
+
+    const ReactSVG = convert(svg)
+    setSVG(ReactSVG)
+  }, [div])
+
+  // Mount / unmount
+  useEffect(() => {
     const div = document.createElement('div')
     const tmpRoot = ReactDOM.createRoot(div)
     tmpRoot.render(
       <>
-        {/* {simple} */}
-        {blackGraph}
-        {/* {graph} */}
+        {recharts}
+        {simple}
       </>
     )
+    setDiv(div)
 
-    const converter = useCallback(() => {
-      const svg = div.children?.[0] as SVGElement
-      if (!svg) {
-        setTimeout(converter, 500)
-        return
-      }
+    // Start trying svg
+    getSVG()
 
-      const ReactSVG = convert(svg)
-      setSVG(ReactSVG)
-    }, [])
+    return () => {
+      tmpRoot.unmount()
+      if (document.body.contains(div)) document.removeChild(div)
+    }
+  }, [])
 
-    useEffect(() => {
-      converter()
-    }, [])
+  /**
+   * Render
+   */
+  if (SVG)
+    return (
+      <PDFViewer style={{ width: '100%', height: '90vh' }}>
+        <Document>
+          <Page size="A4">{SVG}</Page>
+        </Document>
+      </PDFViewer>
+    )
+  return null
+}
 
-    if (SVG)
-      return (
-        <PDFViewer style={{ width: '100%', height: '90vh' }}>
-          <Document>
-            <Page size="A4">{SVG}</Page>
-          </Document>
-        </PDFViewer>
-      )
-    return null
-  }
-
+if (process.env.REACT_APP_RENDER_TEST) {
+  // Root
   const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
   )
 
+  /**
+   * Render
+   */
   root.render(
     <React.StrictMode>
       <RenderTest />

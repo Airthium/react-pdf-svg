@@ -1,5 +1,5 @@
 {
-  "entryPoints": ["./index.d.ts", "src/**/*.tsx"],
+  "entryPoints": ["./index.d.ts", "src/*.tsx", "src/*.ts"],
   "name": "react-pdf-svg",
   "readme": "./README.md"
 }
