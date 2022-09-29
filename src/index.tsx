@@ -121,8 +121,6 @@ const convert = (svg: SVGElement): JSX.Element => {
     props
   )
 
-  props.width = '500'
-
   /**
    * Render
    */
