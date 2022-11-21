@@ -127,67 +127,53 @@ const convert = (svg: SVGElement): JSX.Element => {
   return <Svg {...props}>{getChildren(svg)}</Svg>
 }
 
-/// TEST
-
-/**
- * Render test
- * @returns RenderTest
- */
-export const RenderTest = () => {
-  // State
-  const [div, setDiv] = useState<HTMLDivElement>()
-  const [SVG, setSVG] = useState<JSX.Element>()
-
+/* istanbul ignore if */
+if (process.env.REACT_APP_RENDER_TEST) {
   /**
-   * Get svg
+   * Render test
+   * @returns RenderTest
    */
-  const getSVG = useCallback(() => {
-    const svg = div?.children?.[0] as SVGElement
-    if (!svg) {
-      setTimeout(getSVG, 500)
-      return
-    }
+  const RenderTest = () => {
+    // State
+    const [SVG, setSVG] = useState<JSX.Element>()
 
-    const ReactSVG = convert(svg)
-    setSVG(ReactSVG)
-  }, [div])
+    /**
+     * Get svg
+     * @param current Current div
+     */
+    const getSVG = useCallback((current?: HTMLDivElement) => {
+      const svg = current?.children?.[1] as SVGElement
+      if (!svg) return
 
-  // Mount / unmount
-  useEffect(() => {
-    const div = document.createElement('div')
-    const tmpRoot = ReactDOM.createRoot(div)
-    tmpRoot.render(
+      const ReactSVG = convert(svg)
+      return ReactSVG
+    }, [])
+
+    // Get source
+    useEffect(() => {
+      const source = document.getElementById('source') as HTMLDivElement
+      const newSVG = getSVG(source)
+      setSVG(newSVG)
+    }, [])
+
+    /**
+     * Render
+     */
+    return (
       <>
-        {recharts}
-        {simple}
+        <PDFViewer style={{ width: '100%', height: '90vh' }}>
+          <Document>
+            <Page size="A4">{SVG}</Page>
+          </Document>
+        </PDFViewer>
+        <div id="source">
+          {simple}
+          {recharts}
+        </div>
       </>
     )
-    setDiv(div)
+  }
 
-    // Start trying svg
-    getSVG()
-
-    return () => {
-      tmpRoot.unmount()
-      if (document.body.contains(div)) document.removeChild(div)
-    }
-  }, [])
-
-  /**
-   * Render
-   */
-  if (SVG)
-    return (
-      <PDFViewer style={{ width: '100%', height: '90vh' }}>
-        <Document>
-          <Page size="A4">{SVG}</Page>
-        </Document>
-      </PDFViewer>
-    )
-  return null
-}
-
-if (process.env.REACT_APP_RENDER_TEST) {
   // Root
   const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement

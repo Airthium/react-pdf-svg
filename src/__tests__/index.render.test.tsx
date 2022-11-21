@@ -9,6 +9,6 @@ jest.mock('react-dom/client', () => ({
 describe('index - render', () => {
   test('test', async () => {
     await import('..')
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-  })
+    await new Promise((resolve) => setTimeout(resolve, 2_000))
+  }, 7_000)
 })
