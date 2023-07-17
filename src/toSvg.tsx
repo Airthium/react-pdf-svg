@@ -93,7 +93,7 @@ export const getPresentationAtributes = (item: Element, props: any): void => {
   getAttributes(item, presentationAttributes, props)
 }
 
-export const svgToSvg = (item: Element): JSX.Element => {
+export const svgToSvg = (item: Element): React.JSX.Element => {
   const props: ReactPDF.SVGProps & { key: string } = { key: uuid() }
   getAttributes(
     item,
@@ -114,7 +114,7 @@ export const svgToSvg = (item: Element): JSX.Element => {
  * @param item Item
  * @returns Line
  */
-export const lineToLine = (item: Element): JSX.Element => {
+export const lineToLine = (item: Element): React.JSX.Element => {
   const props: ReactPDF.LineProps & { key: string } = {
     key: uuid(),
     x1: 0,
@@ -142,7 +142,7 @@ export const lineToLine = (item: Element): JSX.Element => {
  * @param item Item
  * @returns Polyline
  */
-export const polylineToPolyline = (item: Element): JSX.Element => {
+export const polylineToPolyline = (item: Element): React.JSX.Element => {
   const props: ReactPDF.PolylineProps & { key: string } = {
     key: uuid(),
     points: ''
@@ -158,7 +158,7 @@ export const polylineToPolyline = (item: Element): JSX.Element => {
  * @param item Item
  * @returns Polygon
  */
-export const polygonToPolygon = (item: Element): JSX.Element => {
+export const polygonToPolygon = (item: Element): React.JSX.Element => {
   const props: ReactPDF.PolygonProps & { key: string } = {
     key: uuid(),
     points: ''
@@ -174,7 +174,7 @@ export const polygonToPolygon = (item: Element): JSX.Element => {
  * @param item Item
  * @returns Path
  */
-export const pathToPath = (item: Element): JSX.Element => {
+export const pathToPath = (item: Element): React.JSX.Element => {
   const props: ReactPDF.PathProps & { key: string } = { key: uuid(), d: '' }
   getPresentationAtributes(item, props)
   getAttributes(item, [{ key: 'd', type: 'string' }], props)
@@ -189,7 +189,7 @@ export const pathToPath = (item: Element): JSX.Element => {
  * @param item Item
  * @returns Rect
  */
-export const rectToRect = (item: Element): JSX.Element => {
+export const rectToRect = (item: Element): React.JSX.Element => {
   const props: ReactPDF.RectProps & { key: string } = {
     key: uuid(),
     x: 0,
@@ -219,7 +219,7 @@ export const rectToRect = (item: Element): JSX.Element => {
  * @param item Item
  * @returns Circle
  */
-export const circleToCircle = (item: Element): JSX.Element => {
+export const circleToCircle = (item: Element): React.JSX.Element => {
   const props: ReactPDF.CircleProps & { key: string } = {
     key: uuid(),
     cx: 0,
@@ -245,7 +245,7 @@ export const circleToCircle = (item: Element): JSX.Element => {
  * @param item Item
  * @returns Ellipse
  */
-export const ellipseToEllipse = (item: Element): JSX.Element => {
+export const ellipseToEllipse = (item: Element): React.JSX.Element => {
   const props: ReactPDF.EllipseProps & { key: string } = {
     key: uuid(),
     cx: 0,
@@ -273,7 +273,7 @@ export const ellipseToEllipse = (item: Element): JSX.Element => {
  * @param item Item
  * @returns Text
  */
-export const textToText = (item: Element): JSX.Element => {
+export const textToText = (item: Element): React.JSX.Element => {
   const props: ReactPDF.SVGTextProps & { key: string } = {
     key: uuid(),
     x: 0,
@@ -293,7 +293,7 @@ export const textToText = (item: Element): JSX.Element => {
 
   const children = item.children
   if (children.length) {
-    const texts: JSX.Element[] = []
+    const texts: React.JSX.Element[] = []
     for (const child of children) {
       texts.push(tspanToTspan(child, item))
     }
@@ -308,7 +308,10 @@ export const textToText = (item: Element): JSX.Element => {
  * @param item Item
  * @returns Tspan
  */
-export const tspanToTspan = (item: Element, parent: Element): JSX.Element => {
+export const tspanToTspan = (
+  item: Element,
+  parent: Element
+): React.JSX.Element => {
   const props: ReactPDF.TspanProps & { dx?: number; dy?: number } = {
     x: 0,
     y: 0
@@ -351,7 +354,7 @@ export const tspanToTspan = (item: Element, parent: Element): JSX.Element => {
  * @param item Item
  * @returns G
  */
-export const gToG = (item: Element): JSX.Element => {
+export const gToG = (item: Element): React.JSX.Element => {
   const props: ReactPDF.GProps & { key: string } = { key: uuid() }
   getPresentationAtributes(item, props)
 
@@ -363,7 +366,7 @@ export const gToG = (item: Element): JSX.Element => {
  * @param item Item
  * @returns Stop
  */
-export const stopToStop = (item: Element): JSX.Element => {
+export const stopToStop = (item: Element): React.JSX.Element => {
   const props: ReactPDF.StopProps & { key: string } = {
     key: uuid(),
     offset: 0,
@@ -387,7 +390,7 @@ export const stopToStop = (item: Element): JSX.Element => {
  * @param item Item
  * @returns Defs
  */
-export const defsToDefs = (item: Element): JSX.Element => {
+export const defsToDefs = (item: Element): React.JSX.Element => {
   const props = { key: uuid() }
 
   return <Defs {...props}>{getChildren(item)}</Defs>
@@ -398,7 +401,7 @@ export const defsToDefs = (item: Element): JSX.Element => {
  * @param item Item
  * @returns ClipPath
  */
-export const clipPathToClipPath = (item: Element): JSX.Element => {
+export const clipPathToClipPath = (item: Element): React.JSX.Element => {
   const props: ReactPDF.ClipPathProps & { key: string } = { key: uuid() }
 
   return <ClipPath {...props}>{getChildren(item)}</ClipPath>
@@ -409,7 +412,9 @@ export const clipPathToClipPath = (item: Element): JSX.Element => {
  * @param item Item
  * @returns LinearGradient
  */
-export const linearGradientToLinearGradient = (item: Element): JSX.Element => {
+export const linearGradientToLinearGradient = (
+  item: Element
+): React.JSX.Element => {
   const props: ReactPDF.LinearGradientProps & { key: string } = {
     key: uuid(),
     id: '',
@@ -438,7 +443,9 @@ export const linearGradientToLinearGradient = (item: Element): JSX.Element => {
  * @param item Item
  * @returns RadialGradient
  */
-export const radialGradientToRadialGradient = (item: Element): JSX.Element => {
+export const radialGradientToRadialGradient = (
+  item: Element
+): React.JSX.Element => {
   const props: ReactPDF.RadialGradientProps & { key: string } = {
     key: uuid(),
     id: '',

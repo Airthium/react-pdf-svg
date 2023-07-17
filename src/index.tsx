@@ -32,7 +32,7 @@ import recharts from './__tests__/recharts'
  * @param parent Parent
  * @returns Children
  */
-export const getChildren = (parent: Element): JSX.Element[] => {
+export const getChildren = (parent: Element): React.JSX.Element[] => {
   const children = []
 
   // Iterate children
@@ -104,7 +104,7 @@ export const getChildren = (parent: Element): JSX.Element[] => {
  * @param svg SVG
  * @returns ReactPDF Svg
  */
-const convert = (svg: SVGElement): JSX.Element => {
+const convert = (svg: SVGElement): React.JSX.Element => {
   if (!svg || svg.tagName !== 'svg')
     throw new Error('Your element is not a svg element')
 
@@ -135,7 +135,7 @@ if (process.env.REACT_APP_RENDER_TEST) {
    */
   const RenderTest = () => {
     // State
-    const [SVG, setSVG] = useState<JSX.Element>()
+    const [SVG, setSVG] = useState<React.JSX.Element>()
 
     /**
      * Get svg
